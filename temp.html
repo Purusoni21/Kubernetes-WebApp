@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>kub</title>
+    <style>
+        #head{
+            padding:10px ;
+            font-size: 35px;
+            background-color: rgb(43, 75, 255);
+            text-align: center;
+            color: cornsilk;
+        }
+        #container{
+            padding: 10px;
+            background: center/cover no-repeat url("kubernetes3.jpg");
+            height: 1000px;
+            color: cornsilk;
+        }
+        #output{
+         
+            margin-left: 500px;
+            margin-top: 20px
+        }
+        #box{
+            display: flex;
+            flex-direction: row;
+            padding: 10px;
+        }
+        .box1,.box2,.box3,.box4,.box5{
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            margin-left: 35px;
+        }
+        #list{
+            margin-left: 350px;
+            font-size: 25px;
+            padding: 10px;
+        }
+        #terminal{
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+            padding: 20px;
+            font-size: 30px;
+            margin-left: 200px;
+            margin-top: 20px;
+        }
+        #sb{
+            width:100px;
+            height: 40px;
+            border-radius: 10px;
+            margin-left: 20px;
+        }
+        #textbox{
+            width: 500px;
+            height: 30px;
+        }
+        #textbox{
+            font-size: 20px;
+            padding: 5px;
+            margin: auto 5px;
+        }
+        #heading{
+            text-align: center;
+        }
+        .button{
+            margin-top: 10px;
+            height: 30px;
+            border-radius: 8px;
+            background-color: rgb(177, 227, 247);
+            
+        }
+        .button:hover{
+            background-color: rgb(67, 67, 250);
+            cursor: pointer;
+        }
+        #sb:hover{
+            background-color: rgb(67, 67, 250);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        function runcommand(){
+            var i = document.getElementById("textbox").value ;
+            var j = new XMLHttpRequest();
+
+            j.open("GET","http://localhost/cgi-bin/kubeterm.py?x=" + i,true);
+            j.send();
+
+            j.onload = function(){
+                var output = j.responseText;
+                document.getElementById("output").innerHTML = output;
+            }
+        }
+        function pod() {
+            var podname = document.getElementById("i1").value;
+            var imagename = document.getElementById("i2").value;
+            var xhr=new XMLHttpRequest();
+            
+            xhr.open("GET","http://localhost/cgi-bin/pod.py?p="+podname+"&i="+imagename,true);
+            xhr.send();
+            xhr.onload=function(){
+                var output1=xhr.responseText;
+                alert("!...output...!"+"\n"+output1);    
+            }
+        }
+        function launch_dep() {
+            var depname = document.getElementById("d1").value;
+            var imagename = document.getElementById("d2").value;
+            
+            var xhr=new XMLHttpRequest();
+            xhr.open("GET","http://localhost/cgi-bin/launch_dep.py?dn="+depname+"&i="+imagename,true);
+            xhr.send();
+            xhr.onload=function(){
+                var output1=xhr.responseText;
+                alert("!...output...!"+"\n"+output1);    
+            }
+        }   
+        function scale_dep() {
+            var depname=document.getElementById("a1").value;
+            var rep=document.getElementById("a2").value;
+            
+            var xhr=new XMLHttpRequest();
+            xhr.open("GET","http://localhost/cgi-bin/scale_dep.py?a="+depname+"&b="+rep,true);
+            xhr.send();
+            xhr.onload=function(){
+                var output1=xhr.responseText;
+                alert("!...output...!"+"\n"+output1);    
+            }
+        }
+        function services() {
+            var depname = document.getElementById("c1").value;
+            var port = document.getElementById("c2").value;
+            var type = document.getElementById("c3").value;
+            
+            var xhr=new XMLHttpRequest();
+            xhr.open("GET","http://localhost/cgi-bin/service.py?d="+depname+"&p="+port+"&t="+type,true);
+            xhr.send();
+            xhr.onload=function(){
+                var output1=xhr.responseText;
+                alert("!...output...!"+"\n"+output1);    
+            } 
+        }
+        function delete_service() {
+            var name = document.getElementById("b1").value;
+            var type = document.getElementById("b2").value;
+            
+            var xhr=new XMLHttpRequest();
+            xhr.open("GET","http://localhost/cgi-bin/del.py?n="+name+"&t="+type,true);
+            xhr.send();
+            xhr.onload=function(){
+                var output1=xhr.responseText;
+                alert("!...output...!"+"\n"+output1);    
+            } 
+        }
+    </script>
+    <div id="head">KUBERNETES WEB APPLICATION</div>
+    <div id="container">
+    <div id="terminal">
+            KUBERNETES TERMINAL:<input type="text" placeholder="enter kubernetes command" id="textbox" />
+            <!--<input type="button" value="run command" id="button" onClick="run()"/> -->
+		<button id="sb" onclick="runcommand()" >Submit</button>
+    </div>
+    <div id="output"></div>   
+    <h1 id="heading">OUR WEBSITE CAN PERFORM VARIOUS ACTIONS</h1>
+        <ul id="list">
+            <li>It can launch pods with specific name given by user</li>
+            <li>Run deployement using image and name given by user</li>
+            <li>Expose services on given user input port number</li>
+            <li>Scale the replica according to user need </li>
+            <li>Delete complete environment created</li>
+            <li>Delete specific resource given by user</li>
+        </ul>
+    <div id="box">
+            
+            <div class="box1">
+                <h2>CREATE POD</h2>
+                ENTER POD NAME:<input id="i1" type="text" placeholder="enter pod_name" />
+                ENTER IMAGE NAME:<input id="i2" type="text" placeholder="enter image_name" />
+                <input type="button" value="create pod" class="button" onclick="pod()"/>
+            </div>
+            <div class="box2">
+                <h2>LAUNCH DEPLOYMENT</h2>
+                ENTER DEPLOYMENT NAME:<input id="d1" type="text" placeholder="enter deployement_name" />
+                ENTER IMAGE NAME:<input id="d2" type="text" placeholder="enter image_name" />
+                <input type="button" value="run deployment" class="button" onclick="launch_dep()">
+            </div>
+            <div class="box3">
+                <h2>EXPOSE SERVICES</h2>
+                ENTER DEPLOYMENT NAME:<input id="c1" type="text" placeholder="enter deployment_name" />
+                ENTER PORT NUMBER:<input id="c2" type="number" placeholder="enter port number" />
+                ENTER SERVCE TYPE:<input id="c3" type="text" placeholder="enter service type" />
+                <input type="button" value="expose services" class="button" onclick="services()">
+            </div>
+            <div class="box4">
+                <h2>SCALE REPLICAS</h2>
+                ENTER DEPLOYMENT NAME:<input id="a1" type="text" placeholder="enter deployment name" />
+                ENTER NUMBER OF REPLICAS:<input id="a2" type="number" placeholder="enter replicas" />
+                <input type="button" value="create replicas" class="button" onclick="scale_dep()">
+            </div>
+            <div class="box5">
+                <h2>DELETE RESOURCES</h2>
+                ENTER RESOURCE NAME:<input id="b1" type="text" placeholder="enter name" />
+                ENTER RESOURCE TYPE:<input id="b2" type="text" placeholder="enter service type" />
+                <input type="button" value="delete resources" class="button" onclick="delete_service()">
+            </div>
+    </div>
+  
+    </div>
+</body>
+</html>
